@@ -165,8 +165,8 @@ router.route('/')
 											defaultPass:'',
 											errorMsg: '已經登出。' });
 			else
-				res.render('login.jade', {  defaultUsr: req.cookies.loginId,
-											defaultPass: req.cookies.loginPass, 
+				res.render('login.jade', {  defaultUsr: '',
+											defaultPass: '', 
 											errorMsg: '登入時間過長，已自動登出。' });
 			
 		}else if ( req.query.act == 'login' ) {
