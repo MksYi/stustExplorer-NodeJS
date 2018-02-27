@@ -1,0 +1,230 @@
+extends ./template/bootstrap
+
+
+block title
+	//- highcharts
+	script(src="/code/highstock.js")
+	script(src="/code/highcharts.js")
+	script(src="/code/modules/series-label.js")
+
+	title 南臺學生總管 (#{usrName})
+
+	nav.navbar.navbar-default
+		.container-fluid
+			.navbar-header
+				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#mynav', aria-expanded='false', aria-controls='mynav')
+					span.sr-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+
+				a.navbar-brand(href=".") 南臺學生總管
+			.collapse.navbar-collapse(id='mynav')
+				ul.nav.navbar-nav
+					li
+						a(href='/') 總覽
+					li
+						a(href='/examseat') 考試座位
+					li
+						a(href='/leave') 請假系統
+					li
+						a(href='/flip') Flip事件
+					li.active
+						a(href='/course') 選課人數查詢
+					li.active
+						a(href='/analysis') 使用者行為
+				ul.nav.navbar-nav.navbar-right
+					li
+						a(href='/logout') 登出 (#{usrName})
+
+
+
+block content
+	.container
+		script.
+			$(document).ready(function() {
+				showAnalysisData();
+				//charts();
+			});
+
+			function showAnalysisData() {
+				$.ajax({
+					url: '/getUserAnalysis',
+					dataType: "json",
+					success: function(data) {
+						if (data != null){
+							for(var i in data['BrowsersArr']){
+								if(data['BrowsersArr'][i][0] == "Edge"){ //IE + Edge
+									data['BrowsersArr'][i][1] = Number(data['BrowsersArr'][i-1][1]) + Number(data['BrowsersArr'][i][1]);
+								}
+								if(data['BrowsersArr'][i][1] > 0){
+									$('#' + data['BrowsersArr'][i][0]).css("width",data['BrowsersArr'][i][1] + "%");
+								}else{
+									$('#' + data['BrowsersArr'][i][0] + 'Bar').hide();
+								}
+							}
+
+							for(var i in data['SystemArr']){
+								if(data['SystemArr'][i][1] > 0){
+									$('#' + data['SystemArr'][i][0]).css("width",data['SystemArr'][i][1] + "%");
+								}else{
+									$('#' + data['SystemArr'][i][0] + 'Bar').hide();
+								}
+							}
+							for(var i in data['ipArr']){
+								$('#' + data['ipArr'][i][0]).css("width",data['ipArr'][i][1] + "%");
+							}
+
+							//Chart
+							Highcharts.chart('container', {
+								chart: {
+									type: 'area'
+								},
+									title: {
+									text: '使用人數統計'
+								},
+								xAxis: {
+									categories: data['loginDate'],
+									tickmarkPlacement: 'on',
+									title: {
+										enabled: false
+									}
+								},
+								yAxis: {
+									title: {
+										text: 'Percent'
+									}
+								},
+								tooltip: {
+									pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ( {point.y:,.0f} 人次 )<br/>',
+									split: true
+								},
+								plotOptions: {
+									area: {
+										stacking: 'percent',
+										lineColor: '#ffffff',
+										lineWidth: 1,
+										marker: {
+											lineWidth: 1,
+											lineColor: '#ffffff'
+										}
+									}
+								},
+								series: [{
+									name: '總上站人次',
+									data: data['loginTotal']
+								}, {
+									name: '工學院上站總次',
+									data: data['collegeTotalArr'][0]
+								}, {
+									name: '商學院上站總次',
+									data: data['collegeTotalArr'][1]
+								}, {
+									name: '人文學院上站總次',
+									data: data['collegeTotalArr'][2]
+								}, {
+									name: '設計學院上站總次',
+									data: data['collegeTotalArr'][3]
+								}, {
+									name: '當天總上站人次',
+									data: data['loginCount']
+								}, {
+									name: '當天工學院人次',
+									data: data['collegeDaysArr'][0]
+								}, {
+									name: '當天商學院人次',
+									data: data['collegeDaysArr'][1]
+								}, {
+									name: '當天人文學院人次',
+									data: data['collegeDaysArr'][2]
+								}, {
+									name: '當天設計學院上站人次',
+									data: data['collegeDaysArr'][3]
+								}]
+							});							
+							// create the chart
+							Highcharts.stockChart('allDays', {
+								chart: {
+									alignTicks: false
+								},
+
+								rangeSelector: {
+									selected: 1
+								},
+
+								title: {
+									text: '各個小時使用狀況'
+								},
+
+								series: [{
+									type: 'column',
+									name: '本小時使用人次',
+									data: data['hourArr'],
+									dataGrouping: {
+										units: [[
+											'week', // unit name
+											[1] // allowed multiples
+										], [
+											'month',
+											[1, 2, 3, 4, 6]
+										]]
+									}
+								}]
+							});
+						}
+					}
+				});
+			}
+
+		h2 校內外使用者比例
+		div(class='progress progress-striped active')
+			div(class='progress-bar' id='inSchool') 校內
+			div(class='progress-bar progress-bar-danger' id='outSchool') 校外
+
+		h2 瀏覽器使用比例
+		<!-- Browsers -->
+		<!-- IE / Edge -->
+		div(class='progress' style='background:#222' id='EdgeBar')
+			div(class='progress-bar progress-bar-info' id='Edge') IE / Edge
+		<!-- Chrome -->
+		div(class='progress' style='background:#222' id='ChromeBar')
+			div(class='progress-bar progress-bar-success' id='Chrome') Chrome
+		<!-- Opera -->
+		div(class='progress' style='background:#222' id='OperaBar')
+			div(class='progress-bar progress-bar-danger' id='Opera') Opera
+		<!-- Firefox -->
+		div(class='progress' style='background:#222' id='FirefoxBar')
+			div(class='progress-bar progress-bar-warning' id='Firefox') Firefox
+		<!-- Safari -->
+		div(class='progress' style='background:#222' id='SafariBar')
+			div(class='progress-bar' id='Safari') Safari
+
+
+		h2 作業系統使用比例
+		<!-- Windows -->
+		div(class='progress' style='background:#222' id='WindowsBar')
+			div(class='progress-bar progress-bar-info' id='Windows') Windows
+		<!-- Mac OS -->
+		div(class='progress' style='background:#222' id='MacBar')
+			div(class='progress-bar progress-bar-danger' id='Mac') Mac OS
+		<!-- IOS -->
+		div(class='progress progress-striped' style='background:#222' id='iOSBar')
+			div(class='progress-bar progress-bar-danger' id='iOS') iOS
+		<!-- Linux -->
+		div(class='progress' style='background:#222' id='LinuxBar')
+			div(class='progress-bar progress-bar-warning' id='Linux') Linux
+		<!-- Android -->
+		div(class='progress progress-striped' style='background:#222' id='AndroidBar')
+			div(class='progress-bar progress-bar-warning' id='Android') Android
+		<!-- Other -->
+		div(class='progress' style='background:#222' id='OtherBar')
+			div(class='progress-bar' id='Other') Other
+
+
+
+		h2 使用人次統計
+		<!-- 各系所 總使用人數統計 -->
+		div(id="container" style="min-width: 310px; height: 400px; max-width: 100%; margin: 0 auto")
+
+		<!-- 每小時使用人數狀況 -->
+		div(id="allDays" style="height: 400px")

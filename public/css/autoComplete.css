@@ -1,0 +1,7 @@
+ul,li{margin: 0;padding: 0;list-style-type: none;}
+a:hover{text-decoration:underline;}
+.txt{width:210px;height:30px;color:#000; border:1px solid #ccc;line-height:25px;padding:0 5px;}
+.autoDis{border:0px solid #999;position:absolute;overflow:hidden;display: none;}
+.autoDis p{line-height:30px;cursor:default;margin:5px;}
+.autoDis li{line-height:30px;cursor:default;background-color:#888;}
+.autoDis .cur{background:#ccc;}

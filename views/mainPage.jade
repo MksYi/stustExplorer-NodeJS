@@ -1,0 +1,349 @@
+extends ./template/bootstrap
+
+block title
+	title 南臺學生總管 (#{usrName})
+
+	nav.navbar.navbar-default
+		.container-fluid
+			.navbar-header
+				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#mynav', aria-expanded='false', aria-controls='mynav')
+					span.sr-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+
+				a.navbar-brand(href=".") 南臺學生總管
+			.collapse.navbar-collapse(id='mynav')
+				ul.nav.navbar-nav
+					li.active
+						a(href='/') 總覽
+					li
+						a(href='/examseat') 考試座位
+					li
+						a(href='/leave') 請假系統
+					li
+						a(href='/flip') Flip事件
+					li
+						a(href='/course') 選課人數查詢
+				ul.nav.navbar-nav.navbar-right
+					li
+						a(href='/logout' id='logout') 登出 (#{usrName})
+
+block content
+	.container
+		script.
+			$(document).ready(function() {
+				if($("#logout").text() == "登出 ()"){
+					window.location.replace('/?act=logout');
+				}
+
+				usrLoginEportal();
+				usrLoginFlip();
+				RefreshVacation();
+				
+				$(function(){
+					setTimeout(function(){
+						CourseUrlLoad();
+					},1000)
+				})
+				$("body").on("click",".window",function(){
+					$(".window").colorbox({iframe:true, width:"80%", height:"80%"});
+				});
+
+			});
+
+			function usrLoginEportal(){
+				var script = '<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock" src=\'data:text/html,<form method=post action="https://identity.stust.edu.tw:8443/nidp/idff/sso?sid=0"><input name="Ecom_User_ID" value="#{eportalUsr}"><input name="Ecom_Password" value="#{eportalPass}"><input name="b1" value="登入Login"></form><script>document.forms[0].submit()<%2fscript>\'></iframe>';
+				
+				var iframe = document.createElement('iframe');
+				document.body.appendChild(iframe);
+				iframe.hidden = true;
+				iframe.contentWindow.document.open();
+				iframe.contentWindow.document.write(script);
+				iframe.contentWindow.document.close();
+			}
+
+			function usrLoginFlip(){
+				var flipScript = '<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock" src="https://eportal.stust.edu.tw/Ap/111"></iframe>';
+
+				var iframe = document.createElement('iframe');
+				document.body.appendChild(iframe);
+				iframe.hidden = true;
+				iframe.contentWindow.document.open();
+				iframe.contentWindow.document.write(flipScript);
+				iframe.contentWindow.document.close();
+			}
+			
+			function RefreshVacation() {
+				$.ajax({
+						url: '/getAbsenteeism',
+						dataType: "json",
+						success: function(data) {
+
+							if (data['classTableArr'] == null) {
+								window.location.replace('/logout');
+								return;
+							}
+
+							var week = new Array(0,0,0,0,0,0,0);
+							var day = 0; var night = 0;
+							/* Day Count Start */
+							for(var i = 1; i<10;i++) {
+								var curClass = data['classTableArr'][i];
+								if(curClass.Monday[0] == 0) 	{week[1]++; day++;}
+								if(curClass.Tuesday[0] == 0) 	{week[2]++; day++;}
+								if(curClass.Wednesday[0] == 0) 	{week[3]++; day++;}
+								if(curClass.Thursday[0] == 0) 	{week[4]++; day++;}
+								if(curClass.Friday[0] == 0) 	{week[5]++; day++;}
+								if(curClass.Saturday[0] == 0) 	{week[6]++; day++;}
+							}
+							day >= 54 ? (day = false) : (day = true);
+							/* Day Count End */
+							/* Night Count Start */
+							for(var i = 10; i<15;i++) {
+								var curClass = data['classTableArr'][i];
+								if(curClass.Monday[0] == 0) 	{week[1]++; night++;}
+								if(curClass.Tuesday[0] == 0) 	{week[2]++; night++;}
+								if(curClass.Wednesday[0] == 0) 	{week[3]++; night++;}
+								if(curClass.Thursday[0] == 0) 	{week[4]++; night++;}
+								if(curClass.Friday[0] == 0) 	{week[5]++; night++;}
+								if(curClass.Saturday[0] == 0) 	{week[6]++; night++;}
+							}
+							night >= 24 ? (night = false) : (night = true);
+							/* Night Count End */
+							
+							var currTableBody = $("#ClassTable").find("tbody");
+							var re = /[\(\)&\|\\\*^%$#@\-]/g;
+							for(var i = 1; i<10;i++) {
+								var curClass = data['classTableArr'][i];
+								currTableBody.append(
+								'<tr class="day">' +
+								'<td>' + 
+									curClass.classTime.substring(0,3) + '<br>' + curClass.classTime.substring(3) + 
+								'</td>' +
+								
+								'<td class="week1">' + 
+									'<a href="#" class="' + curClass.Monday[0].replace(re, "") + '">' + curClass.Monday[0] + '</a><br>' + 
+									'<a href="#" class="' + curClass.Monday[2] + '">' + curClass.Monday[2] + '</a>' + 
+									'<br>' + curClass.Monday[1] + 
+								'</td>' +
+
+								'<td class="week2">' +
+									'<a href="#" class="' + curClass.Tuesday[0].replace(re, "") + '">' + curClass.Tuesday[0] + '</a><br>' +
+									'<a href="#" class="' + curClass.Tuesday[2] + '">' + curClass.Tuesday[2] + '</a>' +
+									'<br>' + curClass.Tuesday[1] + 
+								'</td>' +
+
+								'<td class="week3">' +
+									'<a href="#" class="' + curClass.Wednesday[0].replace(re, "") + '">' + curClass.Wednesday[0] + '</a><br>' +
+									'<a href="#" class="' + curClass.Wednesday[2] + '">' + curClass.Wednesday[2] + '</a>' +
+									'<br>' + curClass.Wednesday[1] + 
+								'</td>' +
+
+								'<td class="week4">' +
+									'<a href="#" class="' + curClass.Thursday[0].replace(re, "") + '">' + curClass.Thursday[0] + '</a><br>' + 
+									'<a href="#" class="' + curClass.Thursday[2] + '">' + curClass.Thursday[2] + '</a>' + 
+									'<br>' + curClass.Thursday[1] + 
+								'</td>' +
+
+								'<td class="week5">' + 
+									'<a href="#" class="' + curClass.Friday[0].replace(re, "") + '">' + curClass.Friday[0] + '</a><br>' +
+									'<a href="#" class="' + curClass.Friday[2] + '">' + curClass.Friday[2] + '</a>' +
+									'<br>' + curClass.Friday[1] + 
+								'</td>' +
+
+								'<td class="week6">' + 
+									'<a href="#" class="' + curClass.Saturday[0].replace(re, "") + '">' + curClass.Saturday[0] + '</a><br>' + 
+									'<a href="#" class="' + curClass.Saturday[2] + '">' + curClass.Saturday[2] + '</a>' + 
+									'<br>' + curClass.Saturday[1] + 
+								'</td>' +
+
+								'</tr>');
+							}
+
+							/* Manager Messages Start */
+							var colspan = 7;
+							if($(window).width()<=768){
+								for(var i = 1; i <= 6; i++){
+									if(week[i] == 14){
+										colspan--;
+									}
+								}
+							}
+
+							currTableBody.append(
+								'<tr>' +
+									'<td id="showhide" class="ClassManagerMessages" colspan="' + colspan + '">總管：</td>' +
+								'</tr>'
+							)
+							/* Manager Messages End */
+
+							for(var i = 11; i<15;i++) {
+								var curClass = data['classTableArr'][i];
+								currTableBody.append(	
+								'<tr class="night">' +
+								'<td>' + 
+									curClass.classTime.substring(0, 4) + '<br>' + curClass.classTime.substring(4) + 
+								'</td>' +
+								
+								'<td class="week1">' + 
+									'<a href="#" class="' + curClass.Monday[0].replace(re, "") + '">' + curClass.Monday[0] + '</a><br>' + 
+									'<a href="#" class="' + curClass.Monday[2] + '">' + curClass.Monday[2] + '</a>' + 
+									'<br>' + curClass.Monday[1] + 
+								'</td>' +
+
+								'<td class="week2">' +
+									'<a href="#" class="' + curClass.Tuesday[0].replace(re, "") + '">' + curClass.Tuesday[0] + '</a><br>' +
+									'<a href="#" class="' + curClass.Tuesday[2] + '">' + curClass.Tuesday[2] + '</a>' +
+									'<br>' + curClass.Tuesday[1] + 
+								'</td>' +
+
+								'<td class="week3">' +
+									'<a href="#" class="' + curClass.Wednesday[0].replace(re, "") + '">' + curClass.Wednesday[0] + '</a><br>' +
+									'<a href="#" class="' + curClass.Wednesday[2] + '">' + curClass.Wednesday[2] + '</a>' +
+									'<br>' + curClass.Wednesday[1] + 
+								'</td>' +
+
+								'<td class="week4">' +
+									'<a href="#" class="' + curClass.Thursday[0].replace(re, "") + '">' + curClass.Thursday[0] + '</a><br>' + 
+									'<a href="#" class="' + curClass.Thursday[2] + '">' + curClass.Thursday[2] + '</a>' + 
+									'<br>' + curClass.Thursday[1] + 
+								'</td>' +
+
+								'<td class="week5">' + 
+									'<a href="#" class="' + curClass.Friday[0].replace(re, "") + '">' + curClass.Friday[0] + '</a><br>' +
+									'<a href="#" class="' + curClass.Friday[2] + '">' + curClass.Friday[2] + '</a>' +
+									'<br>' + curClass.Friday[1] + 
+								'</td>' +
+
+								'<td class="week6">' + 
+									'<a href="#" class="' + curClass.Saturday[0].replace(re, "") + '">' + curClass.Saturday[0] + '</a><br>' + 
+									'<a href="#" class="' + curClass.Saturday[2] + '">' + curClass.Saturday[2] + '</a>' + 
+									'<br>' + curClass.Saturday[1] + 
+								'</td>' +
+
+								'</tr>');
+							}
+
+							/* Manager Messages Start */
+							if(day && night){
+								$(".ClassManagerMessages").text("總管：聽說上面是「日校」的課表，下面是「夜校」的課表。")
+							}else if(!night){
+								$(".night").toggle();
+								$(".ClassManagerMessages").text("總管：您沒有夜校的課程，已經幫您隱藏，若需要打開請戳我一下。")
+							}else if(!day){
+								$(".day").toggle();
+								$(".ClassManagerMessages").text("總管：您沒有日校的課程，已經幫您隱藏，若需要打開請戳我一下。")
+							}
+							/* Manager Messages End */
+
+							/* Show Hide Event Start */
+							colspan = 7;
+							for(var i = 1; i <= 6; i++){
+								if(week[i] == 14){
+									colspan--;
+									$("#week" + i).addClass("b1")
+									$(".week" + i).addClass("b1")
+								}
+							}
+							$(window).resize(function() {
+								wdth=$(window).width();
+								if(wdth <= 768){
+									$(".ClassManagerMessages").attr('colspan', colspan);
+								}else if(week[6] == 14){
+									$("#week6").hide();
+									$(".week6").hide();
+									$(".ClassManagerMessages").attr('colspan', 6);
+								}else{
+									$(".ClassManagerMessages").attr('colspan', 7);
+								}
+							});
+
+							$("#showhide").click(function(){
+								if(!night){
+									if($(".night").css("display") == "none"){
+										$(".night").show(800);
+										$(".ClassManagerMessages").text("總管：已經幫您打開夜校課程 :D")
+									}else{
+										$(".night").hide(800);
+										$(".ClassManagerMessages").text("總管：已經幫您隱藏夜校課程 :D")
+									}
+								}else if(!day){
+									if($(".day").css("display") == "none"){
+										$(".day").show(800);
+										$(".ClassManagerMessages").text("總管：已經幫您打開日校課程 :D")
+									}else{
+										$(".day").hide(800);
+										$(".ClassManagerMessages").text("總管：已經幫您隱藏日校課程 :D")
+									}
+								}
+							});
+							/* Show Hide Event End */
+						}
+				});
+			}
+			function CourseUrlLoad() {
+				$.ajax({
+					url: '/getflipurl',
+					dataType: "json",
+					success: function(data) {
+						/* Un...... 不知道要不要刪掉 */
+						if (data['teacherNameArr'] == null) {
+							window.location.replace('/?act=logout');
+							return;
+						}
+						/* Un...... 不知道要不要刪掉 */
+	
+						for (i = 0; i < data['courseNameArr'].length; i++) { 
+							var courseName = data['courseNameArr'][i]
+							var courseUrl = data['courseHrefs'][i]
+							var tearchName = data['teacherNameArr'][i]
+							var tearchUrl = data['teacherHrefs'][i]
+							var re = /[\(\)&\|\\\*^%$#@\-]/g;
+							$("." + courseName.course.replace(re, "")).attr('href','http://flip.stust.edu.tw' + courseUrl.link);
+							$("." + courseName.course.replace(re, "")).attr('target','_black'); 
+							$("." + tearchName.teacher).attr('href','http://flip.stust.edu.tw' + tearchUrl.link);
+							$("." + tearchName.teacher).addClass("window");
+						}
+					}
+				});
+			}
+
+		<!-- Search -->
+		div(id="content")
+			div(id="search")
+				input(id="search-input" placeholder="總管可以幫你找到校內任何一個頁面")
+				div(id="search-clear" class="no-select") X
+				div(id="search-complete")
+					script(id="complete-template" type="text/x-handlebars-template")
+						<ul id="auto-results" onclick="$('input').focus()">
+						{{#each results}}
+						<li class="auto-result" tabindex="0" onmouseover="$('#search-input').val($(this).text())">{{.}}</li>
+						{{else}}
+						<li class="auto-result" data-invalid="true" >總管找不到你要的頁面，將由 Google 代勞。</li>
+						{{/each}}
+						</ul>
+		link(rel='stylesheet', href='/css/style.css')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js')
+		script(src='js/index.js')
+
+		h1 學生課表
+
+		<!-- today -->
+		div(class ='panel panel-danger')
+			div(class='panel-heading', id='todayHeader' ,data-toggle='collapse', data-parent='#accordion', href='#collapseOne',aria-expanded='true', aria-controls='collapseOne')
+			#collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='collapseOne') 	
+
+				table.table.table-striped.table-hover(id='ClassTable' style="table-layout:fixed;")
+					thead
+						tr
+							th 時間/星期
+							th(id="week1") 一
+							th(id="week2") 二
+							th(id="week3") 三
+							th(id="week4") 四
+							th(id="week5") 五
+							th(id="week6") 六
+					tbody
+
+

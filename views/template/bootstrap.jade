@@ -1,0 +1,62 @@
+doctype html
+
+html(lang="zh_tw")
+	head
+		meta(http-equiv="X-UA-Compatible",
+			name="viewport",
+			content="width=device-width, initial-scale=1, IE=edge",
+			charset="utf-8")
+		link(rel="Shortcut Icon" type="image/x-icon" href="/img/favicon.ico")
+
+		meta(property="og:type", content="article")
+		//- meta(property="og:url", content="https://stust.mks.tw")
+		meta(property="og:image", content="/img/logo.png")
+		meta(property="og:title", content="STUST-南臺學生總管")
+		meta(property="og:description", content="整合學校各項功能並優化使用者體驗的網頁服務。")
+
+
+		block title
+			title Default Title
+
+		//- jquery
+		script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+
+		//- colorBox
+		script(src="colorbox/jquery.colorbox.js")
+		link(href="/colorbox/colorbox.css", rel="stylesheet")
+
+		//- Bootstrap CSS
+		link(href="/css/darkly.bootstrap.css", rel="stylesheet")
+		script(src="/js/bootstrap.min.js")
+		script(src="/js/popper.min.js")
+
+		//-Google 字體
+		link(rel="stylesheet", href="https://fonts.googleapis.com/earlyaccess/cwtexhei.css")
+		link(rel="stylesheet", href="https://fonts.googleapis.com/earlyaccess/cwtexming.css")
+		
+		//- 修正字體
+		link(rel="stylesheet", href="/css/font.css")
+
+
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+		style.
+			.navbar { background-color: transparent; }
+
+	body()
+		
+		block content
+
+
+		.foot
+			div(style='position:absolute; bottom: 0px; right: 0px;')
+			
+				| By STUST(
+				a(href='/about') CSIE 103
+				|)
+		

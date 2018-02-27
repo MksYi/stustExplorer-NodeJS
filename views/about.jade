@@ -1,0 +1,29 @@
+extends ./template/bootstrap
+
+block title
+	title= '南臺學生總管'
+block content
+	nav.navbar.navbar-default
+		.container-fluid
+			.navbar-header
+				a.navbar-brand(href="/") 回首頁
+	div.panel.panel-primary
+		div.panel-heading
+			h3.panel-title 關於南臺學生總管
+		div.panel-body 南臺學生總管是由三位大四資工系老屁股共同完成的學校整合服務，以 Node JS + Express 進行開發，並且依照學生使用經驗，整合學生常用的學校服務，也簡化繁瑣的操作流程，並且使用 Bootstrap 樣板，提供對於學生更友善的操作環境，同時支援手機與電腦上的操作。
+
+	div.panel.panel-danger
+		div.panel-heading
+			h3.panel-title 隱私權 & Cookie 使用聲明
+		div.panel-body
+			h4 隱私權
+			p 本系統將會記錄以下使用者資訊：
+			p IP：分析校內外使用者，我們不會將您的IP位址與任何PII進行關聯對照來識別您的個人身分，除非發生違反使用條款的情況。
+			p 登入時間：分析使用者使用習慣。
+			p 學號：分析使用者科系與年級。
+			p 瀏覽器：分析瀏覽器使用習慣。
+			p 系統：分析系統使用習慣。
+
+			p 不會儲存使用者任何機密資料（包括姓名），可以放心使用本網站所有對應之校園服務。
+			h4 Cookie 使用
+			P 我們需要使用 Cookie 才能夠完成使用者透過本系統請求之校園服務。

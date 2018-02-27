@@ -1,0 +1,175 @@
+extends ./template/bootstrap
+
+block title
+	title 南臺學生總管 (#{usrName})
+
+	nav.navbar.navbar-default
+		.container-fluid
+			.navbar-header
+				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#mynav', aria-expanded='false', aria-controls='mynav')
+					span.sr-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+
+				a.navbar-brand(href=".") 南臺學生總管
+			.collapse.navbar-collapse(id='mynav')
+				ul.nav.navbar-nav
+					li
+						a(href='/') 總覽
+					li
+						a(href='/examseat') 考試座位
+					li
+						a(href='/leave') 請假系統
+					li.active
+						a(href='/flip') Flip事件
+					li
+						a(href='/course') 選課人數查詢
+				ul.nav.navbar-nav.navbar-right
+					li
+						a(href='/logout' id='logout') 登出 (#{usrName})
+
+block content
+	.container
+		script.
+			$(document).ready(function() {
+				
+				if($("#logout").text() == "登出 ()"){
+					window.location.replace('/?act=logout');
+				}
+
+				usrLoginFlip();
+				FlipTable();
+				$("body").on("click",".window",function(){
+					$(".window").colorbox({iframe:true, width:"80%", height:"80%"});
+				});
+			});
+
+			function usrLoginFlip(){
+				var flipScript = '<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock" src="https://eportal.stust.edu.tw/Ap/111"></iframe>'
+				var iframe = document.createElement('iframe');
+				document.body.appendChild(iframe);
+				iframe.hidden = true;
+				iframe.contentWindow.document.open();
+				iframe.contentWindow.document.write(flipScript);
+				iframe.contentWindow.document.close();
+			}
+
+			function FlipTable() {
+				$.ajax({
+							url: '/getflipnotice',
+							dataType: "json",
+							success: function(data) {
+
+								if (data['EventTableArr'] == null || (data['CommentTableBody'] == null || data['BulletinTableBody'] == null )){
+									if (data['Event_hrefs'] == null || (data['Comment_hrefs'] == null || data['Bulletin_hrefs'] == null)) {
+										window.location.replace('/?act=logout');
+										return;
+									}
+								}
+								
+								var j = 0;
+								var EventTableBody = $("#EventTableArr").find("tbody");
+								console.log(data['EventTableArr'].Notice)
+								for(var i in data['EventTableArr']) {
+									var Notice = data['EventTableArr'][i];
+									var href = data['Event_hrefs'];
+									if(Notice.num == "沒有資料"){
+										break;
+									}
+
+									EventTableBody.append('<tr>' + 
+														'<td>' + Notice.num  + '</td>' +
+														'<td><a class="window" href="http://flip.stust.edu.tw' + href[j++].link + '" target="_blank">' + Notice.title + '</a></td>' +
+														'<td>' + Notice.date + '</td>' +
+														'<td>' + Notice.course + '</td>' +				
+														'<td>' + Notice._class + '</td>' +
+														'</tr>');
+										
+								}
+								
+								j = 0;
+								var CommentTableBody = $("#CommentTableArr").find("tbody");
+								for(var i in data['CommentTableArr']) {
+									var Notice = data['CommentTableArr'][i];
+									var href = data['Comment_hrefs'];
+									if(Notice.num == "沒有資料"){
+										break;
+									}
+
+									CommentTableBody.append('<tr>' + 
+														'<td>' + Notice.num  + '</td>' +
+														'<td><a class="window" href="http://flip.stust.edu.tw' + href[j++].link + '" target="_blank">' + Notice.title + '</a></td>' +
+														'<td>' + Notice.date + '</td>' +
+														'<td>' + Notice.course + '</td>' +
+														'<td>' + Notice._class + '</td>' +
+														'</tr>');
+								}
+								
+								j = 0; //開頭多撈
+								var BulletinTableBody = $("#BulletinTableArr").find("tbody");
+								for(var i in data['BulletinTableArr']) {
+									var Notice = data['BulletinTableArr'][i];
+									var href = data['Bulletin_hrefs'];
+									if(Notice.num == "沒有資料"){
+										break;
+									}
+									BulletinTableBody.append('<tr>' + 
+														'<td>' + Notice.num + '</td>' +
+														'<td><a class="window" href="http://flip.stust.edu.tw' + href[j++].link + '" target="_blank">' + Notice.title + '</a></td>' +
+														'<td>' + Notice.date + '</td>' +
+														'<td>' + Notice.course + '</td>' +
+														'<td>' + Notice._class + '</td>' +
+														'</tr>');
+										
+								}
+													
+							}
+				});
+			}
+
+
+		h1 最近事件
+		<!-- ExamTable -->
+		div(class ='panel panel-warning')
+			div(class='panel-heading', id='todayHeader' ,data-toggle='collapse', data-parent='#accordion', href='#collapseOne',aria-expanded='true', aria-controls='collapseOne')
+			#collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='collapseOne') 	
+
+				table.table.table-striped.table-hover(id='EventTableArr')
+					thead
+						tr
+							th(style='width: 10%;') 項次
+							th(style='width: 40%;') 項目
+							th(style='width: 10%;') 時間
+							th(style='width: 20%;') 課程名稱
+							th(style='width: 20%;') 開課班級
+					tbody
+		
+		h1 最新討論
+		div(class ='panel panel-info')
+			div(class='panel-heading', id='todayHeader' ,data-toggle='collapse', data-parent='#accordion', href='#collapseOne',aria-expanded='true', aria-controls='collapseOne')
+			#collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='collapseOne') 	
+
+				table.table.table-striped.table-hover(id='CommentTableArr')
+					thead
+						tr
+							th(style='width: 10%;') 項次
+							th(style='width: 40%;') 項目
+							th(style='width: 10%;') 時間
+							th(style='width: 20%;') 課程名稱
+							th(style='width: 20%;') 開課班級
+					tbody
+		h1 最新公告		
+		div(class ='panel panel-danger')
+			div(class='panel-heading', id='todayHeader' ,data-toggle='collapse', data-parent='#accordion', href='#collapseOne',aria-expanded='true', aria-controls='collapseOne')
+			#collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='collapseOne') 	
+
+				table.table.table-striped.table-hover(id='BulletinTableArr')
+					thead
+						tr
+							th(style='width: 10%;') 項次
+							th(style='width: 40%;') 項目
+							th(style='width: 10%;') 時間
+							th(style='width: 20%;') 課程名稱
+							th(style='width: 20%;') 開課班級
+					tbody

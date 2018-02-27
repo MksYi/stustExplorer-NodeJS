@@ -1,0 +1,61 @@
+extends ./template/bootstrap
+
+block title
+	title 南臺學生總管 (#{usrName})
+
+	nav.navbar.navbar-default
+		.container-fluid
+			.navbar-header
+				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#mynav', aria-expanded='false', aria-controls='mynav')
+					span.sr-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+
+				a.navbar-brand(href=".") 南臺學生總管
+			.collapse.navbar-collapse(id='mynav')
+				ul.nav.navbar-nav
+					li
+						a(href='/') 總覽
+					li
+						a(href='/examseat') 考試座位
+					li
+						a(href='/leave') 請假系統
+					li
+						a(href='/flip') Flip事件
+					li
+						a(href='/course') 選課人數查詢
+				ul.nav.navbar-nav.navbar-right
+					li
+						a(href='/logout') 登出 (#{usrName})
+block content
+	.container
+		script.
+			$(document).ready(function() {
+				//surveyTable();
+				document.domain = 'stust.edu.tw';
+				console.log($("#surveyIframe").contents().val());
+			});
+			iframe = document.createElement('iframe');
+			iframe.style.display = 'none';
+			var state = 0;
+
+			iframe.onload = function() {
+				if(state === 1) {
+					var data = JSON.parse(iframe.contentWindow.name);
+					console.log(data);
+					iframe.contentWindow.document.write('');
+					iframe.contentWindow.close();
+					document.body.removeChild(iframe);
+				} else if(state === 0) {
+					state = 1;
+					iframe.contentWindow.location = 'https://eportal.stust.edu.tw/teaching_feedback/Stud_FeedBack.aspx';
+				}
+			};
+
+			iframe.src = 'https://eportal.stust.edu.tw/teaching_feedback/Stud_FeedBack.aspx';
+			document.body.appendChild(iframe);
+
+		<div id="div1" class="embed-responsive embed-responsive-16by9" style="overflow-y:hidden;">
+		<iframe id="surveyIframe" class="embed-responsive-item" style="background-color: #FFF; position:fixed; top:100px; left:0px; bottom:0px; right:0px; width:100%; height:90%; border:none;overflow:hidden;" src="https://eportal.stust.edu.tw/teaching_feedback/Stud_FeedBack.aspx"></iframe>
+		</div>

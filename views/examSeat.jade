@@ -1,0 +1,91 @@
+extends ./template/bootstrap
+
+block title
+	title 南臺學生總管 (#{usrName})
+
+	nav.navbar.navbar-default
+		.container-fluid
+			.navbar-header
+				button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#mynav', aria-expanded='false', aria-controls='mynav')
+					span.sr-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+
+				a.navbar-brand(href=".") 南臺學生總管
+			.collapse.navbar-collapse(id='mynav')
+				ul.nav.navbar-nav
+					li
+						a(href='/') 總覽
+					li.active
+						a(href='/examseat') 考試座位
+					li
+						a(href='/leave') 請假系統
+					li
+						a(href='/flip') Flip事件
+					li
+						a(href='/course') 選課人數查詢						
+				ul.nav.navbar-nav.navbar-right
+					li
+						a(href='/logout' id='logout') 登出 (#{usrName})
+
+
+block content
+	.container
+		script.
+			$(document).ready(function() {
+				if($("#logout").text() == "登出 ()"){
+					window.location.replace('/?act=logout');
+				}
+
+				ExamSeatTable();
+				$("#map").colorbox({iframe:true, width:"80%", height:"80%"});
+			});
+
+			function ExamSeatTable() {
+				$.ajax({
+							url: '/getExamSeat',
+							dataType: "json",
+							success: function(data) {
+
+								if (data['ExamSeatTableArr'] == null) {
+									//window.location.replace('/?act=logout');
+									$("#Title").text("查無考試時間")
+									return;
+								}
+
+								var currTableBody = $("#ExamSeatTable").find("tbody");
+								console.log(data);
+
+								for(var i in data['ExamSeatTableArr']) {
+									var curClass = data['ExamSeatTableArr'][i];
+									currTableBody.append(	'<tr>' +
+															'<td>' + curClass.date + '</td>' +
+															'<td>' + curClass.period + '</td>' +
+															'<td>' + curClass.time_of_exam + '</td>' +
+															'<td>' + curClass.room + '</td>' +
+															'<td>' + curClass.row + '</td>' +
+															'<td>' + curClass.column + '</td>' +
+															'<td>' + curClass.subject + '</td>' +
+															'<td class="b1">' + curClass.class_name + '</td>' +
+															'<td class="b1">' + curClass.teacher + '</td>' +
+															'</tr>');
+								}
+							}
+				});
+			}
+
+
+		h1(id='Title') 學生考試時間
+		<!-- ExamTable -->
+		p
+			a(href="/img/stust_map.png" id="map") 校內地圖
+		div(class ='panel panel-info')
+			div(class='panel-heading', id='todayHeader' ,data-toggle='collapse', data-parent='#accordion', href='#collapseOne',aria-expanded='true', aria-controls='collapseOne')
+			#collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='collapseOne') 	
+
+				table.table.table-striped.table-hover(id='ExamSeatTable')
+					thead
+						tr
+					tbody
+		img(src="/img/seatsample.png" alt="考試座位表範例圖")
