@@ -2,14 +2,13 @@ doctype html
 
 html(lang="zh_tw")
 	head
-		meta(http-equiv="X-UA-Compatible",
-			name="viewport",
-			content="width=device-width, initial-scale=1, IE=edge",
-			charset="utf-8")
+
+		meta(http-equiv="X-UA-Compatible" content="IE=edge")
+		meta(name="viewport" content="width=device-width, initial-scale=1" charset="utf-8")
 		link(rel="Shortcut Icon" type="image/x-icon" href="/img/favicon.ico")
 
 		meta(property="og:type", content="article")
-		//- meta(property="og:url", content="https://stust.mks.tw")
+		meta(property="og:url", content="https://stust.mks.tw/")
 		meta(property="og:image", content="/img/logo.png")
 		meta(property="og:title", content="STUST-南臺學生總管")
 		meta(property="og:description", content="整合學校各項功能並優化使用者體驗的網頁服務。")
@@ -19,23 +18,23 @@ html(lang="zh_tw")
 			title Default Title
 
 		//- jquery
-		script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+		script(src="/js/jquery.min.js")
 
 		//- colorBox
-		script(src="colorbox/jquery.colorbox.js")
-		link(href="/colorbox/colorbox.css", rel="stylesheet")
+		script(src="/colorbox/jquery.colorbox-min.js")
+		link(href="/colorbox/colorbox.min.css", rel="stylesheet")
 
 		//- Bootstrap CSS
-		link(href="/css/darkly.bootstrap.css", rel="stylesheet")
+		link(href="/css/darkly.bootstrap.min.css", rel="stylesheet")
 		script(src="/js/bootstrap.min.js")
 		script(src="/js/popper.min.js")
 
 		//-Google 字體
-		link(rel="stylesheet", href="https://fonts.googleapis.com/earlyaccess/cwtexhei.css")
-		link(rel="stylesheet", href="https://fonts.googleapis.com/earlyaccess/cwtexming.css")
+		link(rel="stylesheet", href="/css/cwtexhei.min.css")
+		link(rel="stylesheet", href="/css/cwtexming.min.css")
 		
 		//- 修正字體
-		link(rel="stylesheet", href="/css/font.css")
+		link(rel="stylesheet", href="/css/font.min.css")
 
 
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

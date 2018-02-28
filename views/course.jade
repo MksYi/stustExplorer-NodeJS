@@ -34,7 +34,7 @@ block content
 		script.
 			$(document).ready(function() {
 				if($("#logout").text() == "登出 ()"){
-					window.location.replace('/?act=logout');
+					window.location.replace('/?act=logout&timeout=true');
 				}
 				$(".foot").hide()
 			});

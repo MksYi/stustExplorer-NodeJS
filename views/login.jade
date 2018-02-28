@@ -4,31 +4,43 @@ block title
 	title= '南臺學生總管'
 head
 
-
 block content
 	link(rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css")
 	script(src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js")
 	script(src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js")
 	script.
+		$(document).ready(function() {
+			var show #{clearBtn};
+			if(show){
+				$(".clearbtn").show();
+			}else{
+				$(".clearbtn").hide();
+			}
+		});		
+
+		function clearData(){
+			window.location.replace('/logout');
+		}
+
 		function login(){
 			$( "#progressbar").show();
 			$( "#progressbar" ).progressbar({
 				value: false
 			});
-
 			var progressbar = $( "#progressbar" ),
 				progressbarValue = progressbar.find( ".ui-progressbar-value" );
 			
 			progressbarValue.css({
 				"background": '#' + Math.floor( Math.random() * 16777215 ).toString( 16 )
 			});
+
 			loginEportal();
 			loginFlip();
 
 			$(function(){
 				setTimeout(function(){
 					$( "#progressbar").hide();
-				},2400)
+				},2600)
 			})
 		}
 
@@ -90,6 +102,7 @@ block content
 						div(id="progressbar" style="display:none; position: relative; background-color: #ccc; margin: auto")
 							div(class="progress-label" style="position: absolute; text-align:center; width: 100%;top: 4px;font-weight: bold;text-shadow: 1px 1px 0 #fff;") 登入中
 						div.input
-							input.btn.btn-success.btn-block(onclick="login()", type='submit', value= '登入帳號')
+							input.btn.btn-info.btn-block(onclick="login()", type='submit', value= '登入帳號')
+						input.btn.btn-danger.btn-block.clearbtn(onclick="clearData()" value= '清除登入資料')
 				div(class='panel-footer') 
 					|帳號密碼為您登入南臺學生應用資訊系統之帳號密碼組合。

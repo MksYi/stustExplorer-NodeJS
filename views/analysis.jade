@@ -4,7 +4,6 @@ extends ./template/bootstrap
 block title
 	//- highcharts
 	script(src="/code/highstock.js")
-	script(src="/code/highcharts.js")
 	script(src="/code/modules/series-label.js")
 
 	title 南臺學生總管 (#{usrName})
@@ -29,7 +28,7 @@ block title
 						a(href='/leave') 請假系統
 					li
 						a(href='/flip') Flip事件
-					li.active
+					li
 						a(href='/course') 選課人數查詢
 					li.active
 						a(href='/analysis') 使用者行為

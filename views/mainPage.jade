@@ -34,7 +34,7 @@ block content
 		script.
 			$(document).ready(function() {
 				if($("#logout").text() == "登出 ()"){
-					window.location.replace('/?act=logout');
+					window.location.replace('/?act=logout&timeout=true');
 				}
 
 				usrLoginEportal();
@@ -81,7 +81,7 @@ block content
 						success: function(data) {
 
 							if (data['classTableArr'] == null) {
-								window.location.replace('/logout');
+								window.location.replace('/?act=logout&timeout=true');
 								return;
 							}
 
@@ -287,12 +287,10 @@ block content
 					url: '/getflipurl',
 					dataType: "json",
 					success: function(data) {
-						/* Un...... 不知道要不要刪掉 */
 						if (data['teacherNameArr'] == null) {
-							window.location.replace('/?act=logout');
+							window.location.replace('/?act=logout&timeout=true');
 							return;
 						}
-						/* Un...... 不知道要不要刪掉 */
 	
 						for (i = 0; i < data['courseNameArr'].length; i++) { 
 							var courseName = data['courseNameArr'][i]
@@ -324,8 +322,8 @@ block content
 						{{/each}}
 						</ul>
 		link(rel='stylesheet', href='/css/style.css')
-		script(src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js')
-		script(src='js/index.js')
+		script( src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js')
+		script( src='js/searchbar.min.js')
 
 		h1 學生課表
 

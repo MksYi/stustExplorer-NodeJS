@@ -35,7 +35,7 @@ block content
 			$(document).ready(function() {
 				
 				if($("#logout").text() == "登出 ()"){
-					window.location.replace('/?act=logout');
+					window.location.replace('/?act=logout&timeout=true');
 				}
 
 				usrLoginFlip();
@@ -63,7 +63,7 @@ block content
 
 								if (data['EventTableArr'] == null || (data['CommentTableBody'] == null || data['BulletinTableBody'] == null )){
 									if (data['Event_hrefs'] == null || (data['Comment_hrefs'] == null || data['Bulletin_hrefs'] == null)) {
-										window.location.replace('/?act=logout');
+										window.location.replace('/?act=logout&timeout=true');
 										return;
 									}
 								}

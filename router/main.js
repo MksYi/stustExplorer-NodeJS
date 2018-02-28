@@ -99,7 +99,6 @@ router.route('/examseat')
 		else {
 			examSeat.login( req, res, req.cookies.loginId, req.cookies.loginPass, function() {
 					res.redirect('/examseat');
-					//res.end('機器人嘗試以' + req.cookies.loginMail + ' 身份登入 Moodle 系統失敗了！');
 			});
 		}
 	});
@@ -140,9 +139,13 @@ router.route('/analysis')
 /* Page Router End */
 
 
-/* Logout Start */
-// Logout 		-> logout.jade 		-> act=logut
-// Clear(cookie)-> logout Eportal 	-> LoginPage & Loading UserAccount & Pwd
+/* Logout (Normal) */
+// Logout 		-> logout.jade 		-> act=logout
+// Clear(cookie)-> logout Eportal 	-> LoginPage
+
+/* Logout (TimeOut)*/
+// Page 		->  act=logout & timeout=true
+// 					LoginPage
 router.route('/logout')
 	.get(function(req, res){
 		res.cookie('name', '' );
@@ -158,16 +161,17 @@ router.route('/logout')
 
 router.route('/')
 	.get(function(req, res){
-		console.log('User-Agent: ' + req.headers['user-agent']);
 		if ( req.query.act == 'logout' ) {
-			if (req.cookies.loginId && req.cookies.loginPass )
+			if ( req.cookies.loginId && req.cookies.loginPass && req.query.timeout == 'true' )
+				res.render('login.jade', {  defaultUsr: req.cookies.loginId,
+											defaultPass: req.cookies.loginPass, 
+											errorMsg: '登入逾時，已自動登出。',
+											clearBtn: '= true' });
+			else
 				res.render('login.jade', {	defaultUsr:'',
 											defaultPass:'',
-											errorMsg: '已經登出。' });
-			else
-				res.render('login.jade', {  defaultUsr: '',
-											defaultPass: '', 
-											errorMsg: '登入時間過長，已自動登出。' });
+											errorMsg: '已經登出。',
+											clearBtn: '= false' });
 			
 		}else if ( req.query.act == 'login' ) {
 			if ( req.cookies && req.cookies.name && (req.cookies.name != '') ) {

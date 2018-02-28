@@ -35,7 +35,7 @@ block content
 		script.
 			$(document).ready(function() {
 				if($("#logout").text() == "登出 ()"){
-					window.location.replace('/?act=logout');
+					window.location.replace('/?act=logout&timeout=true');
 				}
 
 				ExamSeatTable();
@@ -55,7 +55,6 @@ block content
 								}
 
 								var currTableBody = $("#ExamSeatTable").find("tbody");
-								console.log(data);
 
 								for(var i in data['ExamSeatTableArr']) {
 									var curClass = data['ExamSeatTableArr'][i];
