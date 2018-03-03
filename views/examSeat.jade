@@ -32,6 +32,22 @@ block title
 
 block content
 	.container
+		h1(id='Title') 學生考試時間
+		<!-- ExamTable -->
+		p
+			a(href="/img/stust_map.png" id="map") 校內地圖
+		div(class ='panel panel-info')
+			div(class='panel-heading', id='todayHeader', data-parent='#accordion', href='#collapseOne',aria-expanded='true', aria-controls='collapseOne')
+			#collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='collapseOne') 	
+
+				table.table.table-striped.table-hover(id='ExamSeatTable')
+					thead
+						tr
+					tbody
+		img(src="/img/seatsample.png" alt="考試座位表範例圖")
+
+
+
 		script.
 			$(document).ready(function() {
 				if($("#logout").text() == "登出 ()"){
@@ -73,18 +89,3 @@ block content
 							}
 				});
 			}
-
-
-		h1(id='Title') 學生考試時間
-		<!-- ExamTable -->
-		p
-			a(href="/img/stust_map.png" id="map") 校內地圖
-		div(class ='panel panel-info')
-			div(class='panel-heading', id='todayHeader' ,data-toggle='collapse', data-parent='#accordion', href='#collapseOne',aria-expanded='true', aria-controls='collapseOne')
-			#collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='collapseOne') 	
-
-				table.table.table-striped.table-hover(id='ExamSeatTable')
-					thead
-						tr
-					tbody
-		img(src="/img/seatsample.png" alt="考試座位表範例圖")

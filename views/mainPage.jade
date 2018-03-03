@@ -31,6 +31,52 @@ block title
 
 block content
 	.container
+		<!-- Search -->
+		div(id="content")
+			div(id="search")
+				input(id="search-input" placeholder="總管可以幫你找到校內任何一個頁面")
+				div(id="search-clear" class="no-select") X
+				div(id="search-complete")
+					script(id="complete-template" type="text/x-handlebars-template")
+						<ul id="auto-results" onclick="$('input').focus()">
+						{{#each results}}
+						<li class="auto-result" tabindex="0" onmouseover="$('#search-input').val($(this).text())">{{.}}</li>
+						{{else}}
+						<li class="auto-result" data-invalid="true" >總管找不到你要的頁面，將由 Google 代勞。</li>
+						{{/each}}
+						</ul>
+
+
+		h1 學生課表
+
+		<!-- today -->
+		div(class ='panel panel-danger')
+			div(class='panel-heading', id='todayHeader', data-parent='#accordion', href='#collapseOne',aria-expanded='true', aria-controls='collapseOne') 
+				i(class='fas fa-bullhorn fa-lg')  
+				| 公告　
+				i(class='far fa-calendar-alt fa-lg')  
+				| 事件　
+				i(class='far fa-file fa-lg')  
+				| 檔案　
+				i(class='far fa-comments fa-lg')  
+				| 討論　
+			#collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='collapseOne') 	
+				table.table.table-striped.table-hover(id='ClassTable' style="table-layout:fixed;")
+					thead
+						tr
+							th 時間/星期
+							th(id="week1") 一
+							th(id="week2") 二
+							th(id="week3") 三
+							th(id="week4") 四
+							th(id="week5") 五
+							th(id="week6") 六
+					tbody
+
+		link(rel='stylesheet', href='/css/style.css')
+		script(defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js")
+		script( src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js')
+		script( src='js/searchbar.min.js')
 		script.
 			$(document).ready(function() {
 				if($("#logout").text() == "登出 ()"){
@@ -40,10 +86,9 @@ block content
 				usrLoginEportal();
 				usrLoginFlip();
 				RefreshVacation();
-				
 				$(function(){
 					setTimeout(function(){
-						CourseUrlLoad();
+						LoadAboutFlip();
 					},1000)
 				})
 				$("body").on("click",".window",function(){
@@ -73,7 +118,17 @@ block content
 				iframe.contentWindow.document.write(flipScript);
 				iframe.contentWindow.document.close();
 			}
-			
+			function RefreshReminder() {
+				$.ajax({
+						url: '/getflipnotice',
+						dataType: "json",
+						success: function(data) {
+
+							
+
+						}
+				});
+			}
 			function RefreshVacation() {
 				$.ajax({
 						url: '/getAbsenteeism',
@@ -282,66 +337,78 @@ block content
 						}
 				});
 			}
-			function CourseUrlLoad() {
+			function LoadAboutFlip() {
 				$.ajax({
-					url: '/getflipurl',
+					url: '/getFlipCourseUrlAndMainEvent',
 					dataType: "json",
 					success: function(data) {
-						if (data['teacherNameArr'] == null) {
-							window.location.replace('/?act=logout&timeout=true');
+						if(data['teacherNameArr'] == null){
+							console.log("成立了")
 							return;
 						}
-	
+						var re = /[\(\)&\|\\\*^%$#@\-]/g;
+						/* Course & Tercher Url Start */
 						for (i = 0; i < data['courseNameArr'].length; i++) { 
 							var courseName = data['courseNameArr'][i]
 							var courseUrl = data['courseHrefs'][i]
 							var tearchName = data['teacherNameArr'][i]
 							var tearchUrl = data['teacherHrefs'][i]
-							var re = /[\(\)&\|\\\*^%$#@\-]/g;
 							$("." + courseName.course.replace(re, "")).attr('href','http://flip.stust.edu.tw' + courseUrl.link);
 							$("." + courseName.course.replace(re, "")).attr('target','_black'); 
 							$("." + tearchName.teacher).attr('href','http://flip.stust.edu.tw' + tearchUrl.link);
 							$("." + tearchName.teacher).addClass("window");
 						}
+						/* Course & Tercher Url End */
+						/* Course Event Start */
+							
+						var newEvent = data['NewEventArr'];
+						var commentEvent = data['CommentEventArr'];
+						var bulletinEvent = data['BulletinEventArr'];
+						var noticeEvent =	data['NoticeEventArr'];
+							console.log("newEvent" + newEvent.length)
+							console.log("commentEvent" + commentEvent.length)
+							console.log("bulletinEvent" + bulletinEvent.length)
+							console.log("noticeEvent" + noticeEvent.length)
+
+						for(var i = 1; i <= newEvent.length; i++) {
+							console.log(newEvent[i - 1].course)
+
+							if(newEvent[i - 1].course == null) break;
+							var tmp = newEvent[i - 1].course.replace(re, "");
+							$("." + tmp).append(
+								" <i class='far fa-calendar-alt fa-sm'></i>"
+							);
+							
+						}
+						
+						for(var i = 1; i <= commentEvent.length; i++) {
+							console.log(commentEvent[i - 1].course)
+
+							if(commentEvent[i - 1].course == null) break;
+							var tmp = commentEvent[i - 1].course.replace(re, "");
+							$("." + tmp).append(
+								" <i class='far fa-comments fa-sm'></i>"
+							);
+						}
+						for(var i = 1; i <= bulletinEvent.length; i++) {
+							console.log(bulletinEvent[i - 1].course)
+
+							if(bulletinEvent[i - 1].course == null) break;
+							var tmp = bulletinEvent[i - 1].course.replace(re, "");
+							$("." + tmp).append(
+								" <i class='fas fa-bullhorn fa-sm'></i>"
+							);
+						}
+						for(var i = 1; i <= noticeEvent.length; i++) {
+							console.log(noticeEvent[i - 1].course)
+
+							if(noticeEvent[i - 1].course == null) break;
+							var tmp = noticeEvent[i - 1].course.replace(re, "");
+							$("." + tmp).append(
+								" <i class='far fa-file fa-sm'></i>"
+							);
+						}
+						/* Course Event End */
 					}
 				});
 			}
-
-		<!-- Search -->
-		div(id="content")
-			div(id="search")
-				input(id="search-input" placeholder="總管可以幫你找到校內任何一個頁面")
-				div(id="search-clear" class="no-select") X
-				div(id="search-complete")
-					script(id="complete-template" type="text/x-handlebars-template")
-						<ul id="auto-results" onclick="$('input').focus()">
-						{{#each results}}
-						<li class="auto-result" tabindex="0" onmouseover="$('#search-input').val($(this).text())">{{.}}</li>
-						{{else}}
-						<li class="auto-result" data-invalid="true" >總管找不到你要的頁面，將由 Google 代勞。</li>
-						{{/each}}
-						</ul>
-		link(rel='stylesheet', href='/css/style.css')
-		script( src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js')
-		script( src='js/searchbar.min.js')
-
-		h1 學生課表
-
-		<!-- today -->
-		div(class ='panel panel-danger')
-			div(class='panel-heading', id='todayHeader' ,data-toggle='collapse', data-parent='#accordion', href='#collapseOne',aria-expanded='true', aria-controls='collapseOne')
-			#collapseOne.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='collapseOne') 	
-
-				table.table.table-striped.table-hover(id='ClassTable' style="table-layout:fixed;")
-					thead
-						tr
-							th 時間/星期
-							th(id="week1") 一
-							th(id="week2") 二
-							th(id="week3") 三
-							th(id="week4") 四
-							th(id="week5") 五
-							th(id="week6") 六
-					tbody
-
-

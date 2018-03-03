@@ -14,10 +14,10 @@ process.env.TZ 		= 'Asia/Taipei'
 app.set('port', process.env.PORT || config.port); 	//設定 PORT
 app.set('views', __dirname + '/views');			  	// 設定 view 路徑及 jade 模板系統
 app.set('view engine', 'jade');
+app.use(compression()); 	// 採用 gzip 壓縮
 app.use(express.static(__dirname + '/public'));
 app.use(logger.logger);		// 啟用記錄輸出
 app.use(bodyParser());		// 啟用 body parser 以處理 post 資料
-app.use(compression()); 	// 採用 gzip 壓縮
 var cookieParser = require('cookie-parser')
 app.use(cookieParser())
 

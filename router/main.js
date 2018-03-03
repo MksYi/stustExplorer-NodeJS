@@ -19,6 +19,14 @@ router.route('/getAbsenteeism')
 		} );
 	});
 
+router.route('/getFlipMainEvent')
+	.get(function(req, res){
+		res.set({ 'content-type': 'application/json; charset=utf-8' });
+		flip.getFlipMainEvent( req, res, req.cookies.loginId, function(NewEventArr, CommentEventArr, BulletinEventArr, NoticeEventArr){
+			res.end( JSON.stringify({NewEventArr, CommentEventArr, BulletinEventArr, NoticeEventArr}, null, 10) );
+		} );
+	});
+
 router.route('/getExamSeat')
 	.get(function(req, res){
 		res.set({ 'content-type': 'application/json; charset=utf-8' });
@@ -30,16 +38,16 @@ router.route('/getExamSeat')
 router.route('/getflipnotice')
 	.get(function(req, res){
 		res.set({ 'content-type': 'application/json; charset=utf-8' });
-		flip.Notice( req, res, req.cookies.loginId, function( EventTableArr, CommentTableArr, BulletinTableArr, Event_hrefs, Comment_hrefs, Bulletin_hrefs){
-			res.end(JSON.stringify({EventTableArr, CommentTableArr, BulletinTableArr, Event_hrefs, Comment_hrefs, Bulletin_hrefs}, null, 10));
+		flip.Notice( req, res, req.cookies.loginId, function( EventTableArr, CommentTableArr, BulletinTableArr, NoticeTableArr, Event_hrefs, Comment_hrefs, Bulletin_hrefs, Notice_hrefs){
+			res.end(JSON.stringify({EventTableArr, CommentTableArr, BulletinTableArr, NoticeTableArr, Event_hrefs, Comment_hrefs, Bulletin_hrefs, Notice_hrefs}, null, 10));
 		} );
 	});
 
-router.route('/getflipurl')
+router.route('/getFlipCourseUrlAndMainEvent')
 	.get(function(req, res){
 		res.set({ 'content-type': 'application/json; charset=utf-8' });
-		flip.getCourseUrl( req, res, req.cookies.loginId, function(courseNameArr, courseHrefs, teacherNameArr, teacherHrefs){
-			res.end(JSON.stringify({courseNameArr, courseHrefs, teacherNameArr, teacherHrefs}, null, 10));
+		flip.getFlipCourseUrlAndMainEvent( req, res, req.cookies.loginId, function(courseNameArr, courseHrefs, teacherNameArr, teacherHrefs, NewEventArr, CommentEventArr, BulletinEventArr, NoticeEventArr){
+			res.end(JSON.stringify({courseNameArr, courseHrefs, teacherNameArr, teacherHrefs, NewEventArr, CommentEventArr, BulletinEventArr, NoticeEventArr}, null, 10));
 		} );
 	});
 
