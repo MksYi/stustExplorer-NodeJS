@@ -120,7 +120,7 @@ $(document).ready(function() {
 	function searchPressEnter(event){
 		if (event.keyCode == 13){
 			searched();
-			hideAuto();
+			clear();
 		} 
 	}
 	function searchPressed(e) {

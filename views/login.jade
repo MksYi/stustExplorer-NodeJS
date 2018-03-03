@@ -5,68 +5,6 @@ block title
 head
 
 block content
-	link(rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css")
-	script(src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js")
-	script(src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js")
-	script.
-		$(document).ready(function() {
-			var show #{clearBtn};
-			if(show){
-				$(".clearbtn").show();
-			}else{
-				$(".clearbtn").hide();
-			}
-		});		
-
-		function clearData(){
-			window.location.replace('/logout');
-		}
-
-		function login(){
-			$( "#progressbar").show();
-			$( "#progressbar" ).progressbar({
-				value: false
-			});
-			var progressbar = $( "#progressbar" ),
-				progressbarValue = progressbar.find( ".ui-progressbar-value" );
-			
-			progressbarValue.css({
-				"background": '#' + Math.floor( Math.random() * 16777215 ).toString( 16 )
-			});
-
-			loginEportal();
-			loginFlip();
-
-			$(function(){
-				setTimeout(function(){
-					$( "#progressbar").hide();
-				},2600)
-			})
-		}
-
-		function loginFlip(){
-			var flipScript = '<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock" src="https://eportal.stust.edu.tw/Ap/111"></iframe>'
-
-			var iframe = document.createElement('iframe');
-			document.body.appendChild(iframe);
-			iframe.hidden = true;
-			iframe.contentWindow.document.open();
-			iframe.contentWindow.document.write(flipScript);
-			iframe.contentWindow.document.close();
-		}
-		function loginEportal(){
-			var eportalUsr = $('input[name="usrId"]').val();
-			var eportalPass = $('input[name="usrPass"]').val();
-			var script = '<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock" src=\'data:text/html,<form method=post action="https://identity.stust.edu.tw:8443/nidp/idff/sso?sid=0"><input name="Ecom_User_ID" value="' + eportalUsr + '"><input name="Ecom_Password" value="' + eportalPass + '"><input name="b1" value="登入Login"></form><script>document.forms[0].submit()<%2fscript>\'></iframe>';
-			
-			var iframe = document.createElement('iframe');
-			document.body.appendChild(iframe);
-			iframe.hidden = true;
-			iframe.contentWindow.document.open();
-			iframe.contentWindow.document.write(script);
-			iframe.contentWindow.document.close();
-			$("#eachClass").submit();
-		}
 	nav.navbar.navbar-default
 		.container-fluid
 			.navbar-header
@@ -103,6 +41,70 @@ block content
 							div(class="progress-label" style="position: absolute; text-align:center; width: 100%;top: 4px;font-weight: bold;text-shadow: 1px 1px 0 #fff;") 登入中
 						div.input
 							input.btn.btn-info.btn-block(onclick="login()", type='submit', value= '登入帳號')
-						input.btn.btn-danger.btn-block.clearbtn(onclick="clearData()" value= '清除登入資料')
+						input.btn.btn-danger.btn-block.clearbtn(onclick="clearData()" value= '清除登入資料' style="display: none")
 				div(class='panel-footer') 
 					|帳號密碼為您登入南臺學生應用資訊系統之帳號密碼組合。
+
+	meta(name="google-site-verification" content="RLjVetZAxP_27dxDqPFDl2setLNKa6iT8ru2mZVBums")
+	link(rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css")
+	script(src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js")
+	script(src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js")
+	script.
+		$(document).ready(function() {
+			var show #{clearBtn};
+			if(show){
+				$(".clearbtn").show();
+			}else{
+				$(".clearbtn").hide();
+			}
+		});		
+
+		function clearData(){
+			window.location.replace('/logout');
+		}
+
+		function login(){
+			$( "#progressbar").show();
+			$( "#progressbar" ).progressbar({
+				value: false
+			});
+			var progressbar = $( "#progressbar" ),
+				progressbarValue = progressbar.find( ".ui-progressbar-value" );
+			
+			progressbarValue.css({
+				"background": '#fff4c1'
+			});
+
+			loginEportal();
+			loginFlip();
+
+			$(function(){
+				setTimeout(function(){
+					$( "#progressbar").hide();
+				},2600)
+			})
+		}
+
+		function loginFlip(){
+			var flipScript = '<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock" src="https://eportal.stust.edu.tw/Ap/111"></iframe>'
+
+			var iframe = document.createElement('iframe');
+			document.body.appendChild(iframe);
+			iframe.hidden = true;
+			iframe.contentWindow.document.open();
+			iframe.contentWindow.document.write(flipScript);
+			iframe.contentWindow.document.close();
+		}
+		function loginEportal(){
+			var eportalUsr = $('input[name="usrId"]').val();
+			var eportalPass = $('input[name="usrPass"]').val();
+			var script = '<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock" src=\'data:text/html,<form method=post action="https://identity.stust.edu.tw:8443/nidp/idff/sso?sid=0"><input name="Ecom_User_ID" value="' + eportalUsr + '"><input name="Ecom_Password" value="' + eportalPass + '"><input name="b1" value="登入Login"></form><script>document.forms[0].submit()<%2fscript>\'></iframe>';
+			
+			var iframe = document.createElement('iframe');
+			document.body.appendChild(iframe);
+			iframe.hidden = true;
+			iframe.contentWindow.document.open();
+			iframe.contentWindow.document.write(script);
+			iframe.contentWindow.document.close();
+			$("#eachClass").submit();
+		}
