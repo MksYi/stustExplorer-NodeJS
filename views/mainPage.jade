@@ -93,10 +93,10 @@ block content
 				$(function(){
 					setTimeout(function(){
 						LoadAboutFlip();
-					},1000)
+					},600)
 				})
 				$("body").on("click",".window",function(){
-					$(".window").colorbox({iframe:true, width:"80%", height:"80%"});
+					$(".window").colorbox({iframe:true, width:"86%", height:"86%"});
 				});
 
 			});
@@ -345,7 +345,7 @@ block content
 							var courseUrl = data['courseHrefs'][i]
 							var tearchName = data['teacherNameArr'][i]
 							var tearchUrl = data['teacherHrefs'][i]
-							$("." + courseName.course.replace(re, "")).attr('href','http://flip.stust.edu.tw' + courseUrl.link);
+							$("." + courseName.course.replace(re, "")).attr('href', 'http://flip.stust.edu.tw' + courseUrl.link + '/');
 							$("." + courseName.course.replace(re, "")).attr('target','_black'); 
 							$("." + tearchName.teacher).attr('href','http://flip.stust.edu.tw' + tearchUrl.link);
 							$("." + tearchName.teacher).addClass("window");

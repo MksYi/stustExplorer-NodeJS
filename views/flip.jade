@@ -101,7 +101,7 @@ block content
 				usrLoginFlip();
 				FlipTable();
 				$("body").on("click",".window",function(){
-					$(".window").colorbox({iframe:true, width:"80%", height:"80%"});
+					$(".window").colorbox({iframe:true, width:"92%", height:"92%"});
 				});
 			});
 
@@ -168,7 +168,7 @@ block content
 							
 							j = 0; //開頭多撈
 							var BulletinTableBody = $("#BulletinTableArr").find("tbody");
-							for(var i in data['BulletinTableArr']) {
+							for(var i in data['Event_hrefs']) {
 								var Notice = data['BulletinTableArr'][i];
 								var href = data['Bulletin_hrefs'];
 								if(Notice.num == "沒有資料"){
@@ -185,14 +185,15 @@ block content
 							}
 
 							j = 0; //開頭多撈
-							var BulletinTableBody = $("#NoticeTableArr").find("tbody");
+							var NoticeTableBody = $("#NoticeTableArr").find("tbody");
+							console.log(data['NoticeTableArr'])
 							for(var i in data['NoticeTableArr']) {
 								var Notice = data['NoticeTableArr'][i];
 								var href = data['Notice_hrefs'];
 								if(Notice.num == "沒有資料"){
 									break;
 								}
-								BulletinTableBody.append('<tr>' + 
+								NoticeTableBody.append('<tr>' + 
 													'<td>' + Notice.num + '</td>' +
 													'<td><a class="window" href="http://flip.stust.edu.tw' + href[j++].link + '" target="_blank">' + Notice.title + '</a></td>' +
 													'<td>' + Notice.date + '</td>' +
