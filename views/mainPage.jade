@@ -73,10 +73,6 @@ block content
 							th(id="week5") 五
 							th(id="week6") 六
 					tbody
-		style(type='text/css').
-			i{
-				color: #;
-			}
 		link(rel='stylesheet', href='/css/style.css')
 		script(defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js")
 		script( src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js')
@@ -134,87 +130,66 @@ block content
 								return;
 							}
 
-							var week = new Array(0,0,0,0,0,0,0);
-							var day = 0; var night = 0;
+							var EmptyClassCount = new Array(0, 0, 0, 0, 0, 0, 0);
+							var dayEmptyClassCount = 0; var nightEmptyClassCount = 0;
+							var is_day, is_night;
+							
 							/* Day Count Start */
-							for(var i = 1; i<10;i++) {
+							let ClassDayList = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+							let oneDayCourseStart = 1;
+							let oneDayCourseEnd = 9;
+							let dayCourseTotalNumber = 54;
+							for(var i = oneDayCourseStart; i <= oneDayCourseEnd; i++) {
 								var curClass = data['classTableArr'][i];
-								if(curClass.Monday[0] == 0) 	{week[1]++; day++;}
-								if(curClass.Tuesday[0] == 0) 	{week[2]++; day++;}
-								if(curClass.Wednesday[0] == 0) 	{week[3]++; day++;}
-								if(curClass.Thursday[0] == 0) 	{week[4]++; day++;}
-								if(curClass.Friday[0] == 0) 	{week[5]++; day++;}
-								if(curClass.Saturday[0] == 0) 	{week[6]++; day++;}
+								for(var j = 1; j < ClassDayList.length; j++){
+									if(curClass[ClassDayList[j]]["Course"] == 0){EmptyClassCount[j]++; dayEmptyClassCount++;}
+								}
 							}
-							day >= 54 ? (day = false) : (day = true);
+							dayEmptyClassCount >= dayCourseTotalNumber ? (is_day = false) : (is_day = true);
 							/* Day Count End */
+
 							/* Night Count Start */
-							for(var i = 10; i<15;i++) {
+							let oneNightCourseStart = 11;
+							let oneNightCourseEnd = 14;
+							let nightCourseTotalNumber = 24;
+							for(var i = oneNightCourseStart; i <= oneNightCourseEnd; i++) {
 								var curClass = data['classTableArr'][i];
-								if(curClass.Monday[0] == 0) 	{week[1]++; night++;}
-								if(curClass.Tuesday[0] == 0) 	{week[2]++; night++;}
-								if(curClass.Wednesday[0] == 0) 	{week[3]++; night++;}
-								if(curClass.Thursday[0] == 0) 	{week[4]++; night++;}
-								if(curClass.Friday[0] == 0) 	{week[5]++; night++;}
-								if(curClass.Saturday[0] == 0) 	{week[6]++; night++;}
+								for(var j = 1; j < ClassDayList.length; j++){
+									if(curClass[ClassDayList[j]]["Course"] == 0){EmptyClassCount[j]++; nightEmptyClassCount++;}
+								}
 							}
-							night >= 24 ? (night = false) : (night = true);
+							nightEmptyClassCount >= nightCourseTotalNumber ? (is_night = false) : (is_night = true);
 							/* Night Count End */
 							
 							var currTableBody = $("#ClassTable").find("tbody");
 							var re = /[\(\)&\|\\\*^%$#@\-]/g;
-							for(var i = 1; i<10;i++) {
+
+							for(var i = oneDayCourseStart; i <= oneDayCourseEnd; i++) {
 								var curClass = data['classTableArr'][i];
+								var currTableBodyTmp = '';
+								for(var j = 1; j < ClassDayList.length; j++){
+									currTableBodyTmp +=
+									'<td class="week' + j + '">' + 
+										'<a href="#" class="' + curClass[ClassDayList[j]]["Course"].replace(re, "") + '">' + curClass[ClassDayList[j]]["Course"] + '</a><br>' + 
+										'<a href="#" class="' + curClass[ClassDayList[j]]["TearcherName"] + '">' + curClass[ClassDayList[j]]["TearcherName"] + '</a>' + 
+										'<br>' + curClass[ClassDayList[j]]["ClassRoom"] + 
+									'</td>'
+								}
 								currTableBody.append(
-								'<tr class="day">' +
-								'<td>' + 
-									curClass.classTime.substring(0,3) + '<br>' + curClass.classTime.substring(3) + 
-								'</td>' +
-								
-								'<td class="week1">' + 
-									'<a href="#" class="' + curClass.Monday[0].replace(re, "") + '">' + curClass.Monday[0] + '</a><br>' + 
-									'<a href="#" class="' + curClass.Monday[2] + '">' + curClass.Monday[2] + '</a>' + 
-									'<br>' + curClass.Monday[1] + 
-								'</td>' +
-
-								'<td class="week2">' +
-									'<a href="#" class="' + curClass.Tuesday[0].replace(re, "") + '">' + curClass.Tuesday[0] + '</a><br>' +
-									'<a href="#" class="' + curClass.Tuesday[2] + '">' + curClass.Tuesday[2] + '</a>' +
-									'<br>' + curClass.Tuesday[1] + 
-								'</td>' +
-
-								'<td class="week3">' +
-									'<a href="#" class="' + curClass.Wednesday[0].replace(re, "") + '">' + curClass.Wednesday[0] + '</a><br>' +
-									'<a href="#" class="' + curClass.Wednesday[2] + '">' + curClass.Wednesday[2] + '</a>' +
-									'<br>' + curClass.Wednesday[1] + 
-								'</td>' +
-
-								'<td class="week4">' +
-									'<a href="#" class="' + curClass.Thursday[0].replace(re, "") + '">' + curClass.Thursday[0] + '</a><br>' + 
-									'<a href="#" class="' + curClass.Thursday[2] + '">' + curClass.Thursday[2] + '</a>' + 
-									'<br>' + curClass.Thursday[1] + 
-								'</td>' +
-
-								'<td class="week5">' + 
-									'<a href="#" class="' + curClass.Friday[0].replace(re, "") + '">' + curClass.Friday[0] + '</a><br>' +
-									'<a href="#" class="' + curClass.Friday[2] + '">' + curClass.Friday[2] + '</a>' +
-									'<br>' + curClass.Friday[1] + 
-								'</td>' +
-
-								'<td class="week6">' + 
-									'<a href="#" class="' + curClass.Saturday[0].replace(re, "") + '">' + curClass.Saturday[0] + '</a><br>' + 
-									'<a href="#" class="' + curClass.Saturday[2] + '">' + curClass.Saturday[2] + '</a>' + 
-									'<br>' + curClass.Saturday[1] + 
-								'</td>' +
-
+								'<tr class="day">' + 
+									'<td>' + 
+										curClass["ClassTime"]["ClassNo"] + '<br>' + curClass["ClassTime"]["ClassStart"] + ' ~ ' + curClass["ClassTime"]["ClassEnd"] +
+									'</td>' +
+									currTableBodyTmp  +
 								'</tr>');
 							}
 
 							/* Manager Messages Start */
+							let totalClassNumber = 13
 							var colspan = 7;
-							if($(window).width()<=768){
-								for(var i = 1; i <= 6; i++){
-									if(week[i] == 14){
+							if($(window).width() <= 768){
+								for(var i = 1; i < ClassDayList.length; i++){
+									if(EmptyClassCount[i] >= totalClassNumber){
 										colspan--;
 									}
 								}
@@ -227,69 +202,42 @@ block content
 							)
 							/* Manager Messages End */
 
-							for(var i = 11; i<15;i++) {
+							for(var i = oneNightCourseStart; i <= oneNightCourseEnd; i++) {
 								var curClass = data['classTableArr'][i];
-								currTableBody.append(	
-								'<tr class="night">' +
-								'<td>' + 
-									curClass.classTime.substring(0, 4) + '<br>' + curClass.classTime.substring(4) + 
-								'</td>' +
-								
-								'<td class="week1">' + 
-									'<a href="#" class="' + curClass.Monday[0].replace(re, "") + '">' + curClass.Monday[0] + '</a><br>' + 
-									'<a href="#" class="' + curClass.Monday[2] + '">' + curClass.Monday[2] + '</a>' + 
-									'<br>' + curClass.Monday[1] + 
-								'</td>' +
-
-								'<td class="week2">' +
-									'<a href="#" class="' + curClass.Tuesday[0].replace(re, "") + '">' + curClass.Tuesday[0] + '</a><br>' +
-									'<a href="#" class="' + curClass.Tuesday[2] + '">' + curClass.Tuesday[2] + '</a>' +
-									'<br>' + curClass.Tuesday[1] + 
-								'</td>' +
-
-								'<td class="week3">' +
-									'<a href="#" class="' + curClass.Wednesday[0].replace(re, "") + '">' + curClass.Wednesday[0] + '</a><br>' +
-									'<a href="#" class="' + curClass.Wednesday[2] + '">' + curClass.Wednesday[2] + '</a>' +
-									'<br>' + curClass.Wednesday[1] + 
-								'</td>' +
-
-								'<td class="week4">' +
-									'<a href="#" class="' + curClass.Thursday[0].replace(re, "") + '">' + curClass.Thursday[0] + '</a><br>' + 
-									'<a href="#" class="' + curClass.Thursday[2] + '">' + curClass.Thursday[2] + '</a>' + 
-									'<br>' + curClass.Thursday[1] + 
-								'</td>' +
-
-								'<td class="week5">' + 
-									'<a href="#" class="' + curClass.Friday[0].replace(re, "") + '">' + curClass.Friday[0] + '</a><br>' +
-									'<a href="#" class="' + curClass.Friday[2] + '">' + curClass.Friday[2] + '</a>' +
-									'<br>' + curClass.Friday[1] + 
-								'</td>' +
-
-								'<td class="week6">' + 
-									'<a href="#" class="' + curClass.Saturday[0].replace(re, "") + '">' + curClass.Saturday[0] + '</a><br>' + 
-									'<a href="#" class="' + curClass.Saturday[2] + '">' + curClass.Saturday[2] + '</a>' + 
-									'<br>' + curClass.Saturday[1] + 
-								'</td>' +
-
+								var currTableBodyTmp = '';
+								for(var j = 1; j < ClassDayList.length; j++){
+									currTableBodyTmp +=
+									'<td class="week' + j + '">' + 
+										'<a href="#" class="' + curClass[ClassDayList[j]]["Course"].replace(re, "") + '">' + curClass[ClassDayList[j]]["Course"] + '</a><br>' + 
+										'<a href="#" class="' + curClass[ClassDayList[j]]["TearcherName"] + '">' + curClass[ClassDayList[j]]["TearcherName"] + '</a>' + 
+										'<br>' + curClass[ClassDayList[j]]["ClassRoom"] + 
+									'</td>'
+								}								
+								currTableBody.append(
+								'<tr class="night">' + 
+									'<td>' + 
+										curClass["ClassTime"]["ClassNo"] + '<br>' + curClass["ClassTime"]["ClassStart"] + ' ~ ' + curClass["ClassTime"]["ClassEnd"] +
+									'</td>' +
+									currTableBodyTmp  +
 								'</tr>');
 							}
 
 							/* Manager Messages Start */
-							if(day && night){
+							if(is_day && is_night){
 								$(".ClassManagerMessages").text("總管：聽說上面是「日校」的課表，下面是「夜校」的課表。")
-							}else if(!night){
+							}else if(!is_night){
 								$(".night").toggle();
 								$(".ClassManagerMessages").text("總管：您沒有夜校的課程，已經幫您隱藏，若需要打開請戳我一下。")
-							}else if(!day){
+							}else if(!is_day){
 								$(".day").toggle();
 								$(".ClassManagerMessages").text("總管：您沒有日校的課程，已經幫您隱藏，若需要打開請戳我一下。")
 							}
 							/* Manager Messages End */
 
 							/* Show Hide Event Start */
-							colspan = 7;
-							for(var i = 1; i <= 6; i++){
-								if(week[i] == 14){
+							colspan = 7; //STUST Managet ColSpan
+							for(var i = 1; i < ClassDayList.length; i++){
+								if(EmptyClassCount[i] >= totalClassNumber){
 									colspan--;
 									$("#week" + i).addClass("b1")
 									$(".week" + i).addClass("b1")
@@ -299,7 +247,7 @@ block content
 								wdth=$(window).width();
 								if(wdth <= 768){
 									$(".ClassManagerMessages").attr('colspan', colspan);
-								}else if(week[6] == 14){
+								}else if(EmptyClassCount[6] >= totalClassNumber){
 									$("#week6").hide();
 									$(".week6").hide();
 									$(".ClassManagerMessages").attr('colspan', 6);
@@ -309,7 +257,7 @@ block content
 							});
 
 							$("#showhide").click(function(){
-								if(!night){
+								if(!is_night){
 									if($(".night").css("display") == "none"){
 										$(".night").show(800);
 										$(".ClassManagerMessages").text("總管：已經幫您打開夜校課程 :D")
@@ -317,7 +265,7 @@ block content
 										$(".night").hide(800);
 										$(".ClassManagerMessages").text("總管：已經幫您隱藏夜校課程 :D")
 									}
-								}else if(!day){
+								}else if(!is_day){
 									if($(".day").css("display") == "none"){
 										$(".day").show(800);
 										$(".ClassManagerMessages").text("總管：已經幫您打開日校課程 :D")
