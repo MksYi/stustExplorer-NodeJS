@@ -120,14 +120,6 @@ block content
 						url: '/getflipnotice',
 						dataType: "json",
 						success: function(data) {
-
-							if (data['EventTableArr'] == null || (data['CommentTableBody'] == null || data['BulletinTableBody'] == null )){
-								if (data['Event_hrefs'] == null || (data['Comment_hrefs'] == null || data['Bulletin_hrefs'] == null)) {
-									window.location.replace('/?act=logout&timeout=true');
-									return;
-								}
-							}
-							
 							var j = 0;
 							var EventTableBody = $("#EventTableArr").find("tbody");
 							console.log(data['EventTableArr'].Notice)
@@ -190,9 +182,6 @@ block content
 							for(var i in data['NoticeTableArr']) {
 								var Notice = data['NoticeTableArr'][i];
 								var href = data['Notice_hrefs'];
-								if(Notice.num == "沒有資料"){
-									break;
-								}
 								NoticeTableBody.append('<tr>' + 
 													'<td>' + Notice.num + '</td>' +
 													'<td><a class="window" href="http://flip.stust.edu.tw' + href[j++].link + '" target="_blank">' + Notice.title + '</a></td>' +

@@ -11,12 +11,16 @@
   margin: 0 auto;
   padding: 10px;
 }
+#content ::-webkit-input-placeholder{
+  color: #EEE;
+}
+
 #content #intro {
   margin: 0;
   margin-bottom: 20px;
   padding: 0;
   text-align: center;
-  color: #D86E31;
+  color: #F17E7E;
 }
 #content #search {
   position: relative;
@@ -31,7 +35,7 @@
   height: 50px;
   color: white;
   background: transparent;
-  border: 5px solid #D86E31;
+  border: 5px solid #2BC1F7;
   border-radius: 25px;
   outline: 0;
 }
@@ -42,7 +46,7 @@
   right: 0;
   margin: 20px;
   padding: 5px;
-  color: #D86E31;
+  color: #FFF;
 }
 #content #search #search-clear:hover {
   cursor: pointer;
@@ -59,7 +63,7 @@
   width: 100%;
   background: white;
   color: black;
-  border: 5px solid #D86E31;
+  border: 5px solid #2BC1F7;
   border-top: 0;
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
