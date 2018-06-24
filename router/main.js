@@ -72,8 +72,8 @@ router.route('/api')
 router.route('/search')
 	.get(function(req, res){
 		search.action(req, res, function(is_schoolSite, key){
-			console.log('is_schoolSite: ' + is_schoolSite);
-			console.log('GET: ' + key);
+			// console.log('is_schoolSite: ' + is_schoolSite);
+			// console.log('GET: ' + key);
 			if(is_schoolSite == "yes"){
 				res.redirect(key);
 			}else{
@@ -106,7 +106,7 @@ router.route('/examseat')
 		}
 		else {
 			examSeat.login( req, res, req.cookies.loginId, req.cookies.loginPass, function() {
-					res.redirect('/examseat');
+				res.redirect('/examseat');
 			});
 		}
 	});
