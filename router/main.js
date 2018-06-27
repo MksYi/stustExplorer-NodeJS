@@ -22,7 +22,7 @@ router.route('/getAbsenteeism')
 router.route('/getFlipMainEvent')
 	.get(function(req, res){
 		res.set({ 'content-type': 'application/json; charset=utf-8' });
-		flip.getFlipMainEvent( req, res, req.cookies.loginId, function(NewEventArr, CommentEventArr, BulletinEventArr, NoticeEventArr){
+		flip.getFlipMainEvent( req, res, req.session.usr, function(NewEventArr, CommentEventArr, BulletinEventArr, NoticeEventArr){
 			res.end( JSON.stringify({NewEventArr, CommentEventArr, BulletinEventArr, NoticeEventArr}, null, 10) );
 		} );
 	});
@@ -38,7 +38,7 @@ router.route('/getExamSeat')
 router.route('/getflipnotice')
 	.get(function(req, res){
 		res.set({ 'content-type': 'application/json; charset=utf-8' });
-		flip.Notice( req, res, req.cookies.loginId, function( EventTableArr, CommentTableArr, BulletinTableArr, NoticeTableArr, Event_hrefs, Comment_hrefs, Bulletin_hrefs, Notice_hrefs){
+		flip.Notice( req, res, req.session.usr, function( EventTableArr, CommentTableArr, BulletinTableArr, NoticeTableArr, Event_hrefs, Comment_hrefs, Bulletin_hrefs, Notice_hrefs){
 			res.end(JSON.stringify({EventTableArr, CommentTableArr, BulletinTableArr, NoticeTableArr, Event_hrefs, Comment_hrefs, Bulletin_hrefs, Notice_hrefs}, null, 10));
 		} );
 	});
@@ -46,7 +46,7 @@ router.route('/getflipnotice')
 router.route('/getFlipCourseUrlAndMainEvent')
 	.get(function(req, res){
 		res.set({ 'content-type': 'application/json; charset=utf-8' });
-		flip.getFlipCourseUrlAndMainEvent( req, res, req.cookies.loginId, function(courseNameArr, courseHrefs, teacherNameArr, teacherHrefs, NewEventArr, CommentEventArr, BulletinEventArr, NoticeEventArr){
+		flip.getFlipCourseUrlAndMainEvent( req, res, req.session.usr, function(courseNameArr, courseHrefs, teacherNameArr, teacherHrefs, NewEventArr, CommentEventArr, BulletinEventArr, NoticeEventArr){
 			res.end(JSON.stringify({courseNameArr, courseHrefs, teacherNameArr, teacherHrefs, NewEventArr, CommentEventArr, BulletinEventArr, NoticeEventArr}, null, 10));
 		} );
 	});
@@ -102,10 +102,10 @@ router.route('/about')
 router.route('/examseat')
 	.get(function(req, res) {
 		if ( req.cookies && req.cookies.stustPortalCookie && (req.cookies.stustPortalCookie != '')){
-			res.render('examSeat.jade',{usrName: req.cookies.name});			
+			res.render('examSeat.jade',{usrName: req.session.name});			
 		}
 		else {
-			examSeat.login( req, res, req.cookies.loginId, req.cookies.loginPass, function() {
+			examSeat.login( req, res, req.session.usr, req.session.pass, function() {
 				res.redirect('/examseat');
 			});
 		}
@@ -113,18 +113,18 @@ router.route('/examseat')
 
 router.route('/leave')
 	.get(function(req, res) {
-		res.render('leave.jade',{	usrName: req.cookies.name,
-									eportalUsr: req.cookies.loginId,
-									eportalPass: req.cookies.loginPass });
+		res.render('leave.jade',{	usrName: req.session.name,
+									eportalUsr: req.session.usr,
+									eportalPass: req.session.pass });
 	});
 
 router.route('/flip')
 	.get(function(req, res) {
 		if ( req.cookies && req.cookies.stustFlipCookie && (req.cookies.stustFlipCookie != '')){
-			res.render('flip.jade',{usrName: req.cookies.name});			
+			res.render('flip.jade',{usrName: req.session.name});			
 		}
 		else {
-			flip.login( req, res, req.cookies.loginId, req.cookies.loginPass, function() {
+			flip.login( req, res, req.session.usr, req.session.pass, function() {
 				res.redirect('/flip');
 			});
 		}
@@ -132,17 +132,17 @@ router.route('/flip')
 
 router.route('/stustSurvey')
 	.get(function(req, res) {
-		res.render('stustSurvey.jade',{usrName: req.cookies.name});
+		res.render('stustSurvey.jade',{usrName: req.session.name});
 	})
 
 router.route('/course')
 	.get(function(req, res) {
-		res.render('course.jade',{usrName: req.cookies.name});
+		res.render('course.jade',{usrName: req.session.name});
 	})
 
 router.route('/analysis')
 	.get(function(req, res) {
-		res.render('analysis.jade',{usrName: req.cookies.name});
+		res.render('analysis.jade',{usrName: req.session.name});
 	})
 /* Page Router End */
 
@@ -156,13 +156,14 @@ router.route('/analysis')
 // 					LoginPage
 router.route('/logout')
 	.get(function(req, res){
-		res.cookie('name', '' );
 		res.cookie('stustPortalCookie', '' );
 		res.cookie('stustFlipCookie', '' );
 		res.cookie('PageLogin', '' );
 		res.cookie('leaveLogin', '' );
-		res.cookie('loginId', '' );
-		res.cookie('loginPass', '' );
+		// res.cookie('name', '' );
+		// res.cookie('loginId', '' );
+		// res.cookie('loginPass', '' );
+		req.session.destroy();
 		res.render('logout.jade');
 	})
 /* Logout End */
@@ -170,9 +171,9 @@ router.route('/logout')
 router.route('/')
 	.get(function(req, res){
 		if ( req.query.act == 'logout' ) {
-			if ( req.cookies.loginId && req.cookies.loginPass && req.query.timeout == 'true' )
-				res.render('login.jade', {  defaultUsr: req.cookies.loginId,
-											defaultPass: req.cookies.loginPass, 
+			if ( req.session.usr && req.session.pass && req.query.timeout == 'true' )
+				res.render('login.jade', {  defaultUsr: req.session.usr,
+											defaultPass: req.session.pass, 
 											errorMsg: '登入逾時，已自動登出。',
 											clearBtn: '= true' });
 			else
@@ -182,8 +183,8 @@ router.route('/')
 											clearBtn: '= false' });
 			
 		}else if ( req.query.act == 'login' ) {
-			if ( req.cookies && req.cookies.name && (req.cookies.name != '') ) {
-				flip.login( req, res, req.cookies.loginId, req.cookies.loginPass, function() {
+			if ( req.cookies && req.session.name && (req.session.name != '') ) {
+				flip.login( req, res, req.session.usr, req.session.pass, function() {
 					res.redirect('./');
 				});
 			}
@@ -191,17 +192,15 @@ router.route('/')
 				res.render('login.jade', { defaultUsr:'', defaultPass: '', errorMsg: '登入失敗, 帳號密碼不正確?' });
 		}
 		else {
+			if ( req.cookies && req.session.name && (req.session.name  != '') && req.session.usr && req.session.pass ){
+				res.render('mainPage.jade', { 	usrName: req.session.name,
+												eportalUsr: req.session.usr,
+												eportalPass: req.session.pass });
 
-			if ( req.cookies && req.cookies.name && (req.cookies.name  != '') && req.cookies.loginId && req.cookies.loginPass ) 
-				res.render('mainPage.jade', { 	usrName: req.cookies.name,
-												eportalUsr: req.cookies.loginId,
-												eportalPass: req.cookies.loginPass });		
-			
-			else {
-		
-				if (req.cookies.loginId && req.cookies.loginPass )
-					res.render('login.jade', {	defaultUsr:req.cookies.loginId,
-												defaultPass:req.cookies.loginPass });
+			}else {
+				if (req.session.usr && req.session.pass )
+					res.render('login.jade', {	defaultUsr:req.session.usr,
+												defaultPass:req.session.pass });
 				else
 					res.render('login.jade', { defaultUsr:'', defaultPass: '' });
 			}

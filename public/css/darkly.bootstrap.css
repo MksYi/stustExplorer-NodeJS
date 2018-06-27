@@ -1106,7 +1106,7 @@ a {
 }
 a:hover,
 a:focus {
-  color: #ddd;
+  color: #ccc;
   text-decoration: underline;
 }
 a:focus {

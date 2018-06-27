@@ -5,7 +5,8 @@ var compression = require('compression');
 var config 	= require(__dirname + '/config.json');
 var logger	= require(__dirname + '/lib/logger/logger')
 var bodyParser = require('body-parser');
-
+var cookieParser = require('cookie-parser')
+var session = require('express-session');
 // Require apps
 var app 	= express();
 
@@ -18,9 +19,18 @@ app.use(compression()); 	// 採用 gzip 壓縮
 app.use(express.static(__dirname + '/public'));
 app.use(logger.logger);		// 啟用記錄輸出
 app.use(bodyParser());		// 啟用 body parser 以處理 post 資料
-var cookieParser = require('cookie-parser')
-app.use(cookieParser())
+// app.use(cookieParser())
 
+// Session 
+app.use(cookieParser('MksYeeeeeeeeeeeeeeee'));
+app.use(session({
+	secret: 'MksYeeeeeeeeeeeeeeee',
+	resave: true,
+	saveUninitialized: false,
+	cookie: {
+		maxAge: 2400000 * 1000 // 40分鐘
+	}
+}));
 console.log('[*] 初始化完畢')
 
 // Routers
@@ -32,3 +42,9 @@ app.use('/', r_main);
 app.listen(app.get('port'), '0.0.0.0' ,function(){
 	console.log('[*] 伺服器監聽於連接埠' + app.get('port'));
 });
+
+// HerokuApp Don't Sleeping!!
+var http = require("http");
+setInterval(function() {
+    http.get("http://stust-explorer.herokuapp.com");
+}, 300000); // every 5 minutes (300000)
