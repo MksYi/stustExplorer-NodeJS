@@ -82,9 +82,9 @@ block content
 				if($("#logout").text() == "登出 ()"){
 					window.location.replace('/?act=logout&timeout=true');
 				}
-
-				usrLoginEportal();
-				usrLoginFlip();
+				// 延長 Eportal Token 過期時間
+				//- usrLoginEportal();
+				//- usrLoginFlip();
 				RefreshVacation();
 				$(function(){
 					setTimeout(function(){

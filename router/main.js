@@ -6,7 +6,6 @@ var examSeat = require('../lib/stust/examSeat'); //ExamSeat
 var search = require('../lib/stust/search')//Search
 var analysis = require('../lib/stust/analysis')
 var survey = require('../lib/stust/survey')
-var moment = require('moment');
 var express = require('express');
 var router 	= express.Router();
 
