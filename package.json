@@ -18,7 +18,7 @@
     "morgan": "^1.9.1",
     "request": "^2.83.0",
     "tough-cookie-filestore": "0.0.1",
-    "lodash": "=4.17.11"
+    "lodash": "=4.17.13"
   },
   "devDependencies": {},
   "scripts": {

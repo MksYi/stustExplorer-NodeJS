@@ -293,9 +293,9 @@ block content
 							var courseUrl = data['courseHrefs'][i]
 							var tearchName = data['teacherNameArr'][i]
 							var tearchUrl = data['teacherHrefs'][i]
-							$("." + courseName.course.replace(re, "")).attr('href', 'http://flip.stust.edu.tw' + courseUrl.link + '/');
+							$("." + courseName.course.replace(re, "")).attr('href', 'https://flip.stust.edu.tw' + courseUrl.link + '/');
 							$("." + courseName.course.replace(re, "")).attr('target','_black'); 
-							$("." + tearchName.teacher).attr('href','http://flip.stust.edu.tw' + tearchUrl.link);
+							$("." + tearchName.teacher).attr('href','https://flip.stust.edu.tw' + tearchUrl.link);
 							$("." + tearchName.teacher).addClass("window");
 						}
 						/* Course & Tercher Url End */
